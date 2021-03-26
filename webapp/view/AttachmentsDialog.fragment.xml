@@ -1,0 +1,8 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:html="http://www.w3.org/1999/xhtml">
+	<Dialog id="attachments_dialog" title="{i18n>title.attachmentsdialog}" resizeable="true">
+		<content></content>
+		<buttons>
+			<Button text="{i18n>button.close}" press="onAttachmentsDialogClose"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

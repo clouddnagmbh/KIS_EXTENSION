@@ -1,0 +1,10 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:html="http://www.w3.org/1999/xhtml">
+	<!-- The following controls were copied from the parent view -->
+	<Toolbar xmlns="sap.m">
+		<Button type="Back" press="onNavBack" visible="{= !${editModel&gt;/editmode}}"/>
+		<ToolbarSpacer/>
+		<Title text="{i18n&gt;title}"/>
+		<ToolbarSpacer/>
+		<Button id="customer_button_attachments" icon="sap-icon://attachment" press="onOpenAttachments"/>
+	</Toolbar>
+</core:FragmentDefinition>

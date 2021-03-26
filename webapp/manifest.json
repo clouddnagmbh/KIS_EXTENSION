@@ -1,0 +1,64 @@
+{
+	"_version": "1.1.0",
+	"sap.app": {
+		"_version": "1.1.0",
+		"id": "at.clouddna.training00.FioriDeepDive.ZHOFIO_00Extension",
+		"type": "application",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"title": "{{appTitle}}",
+		"i18n": "i18n/i18n.properties"
+	},
+	"sap.ui": {
+		"_version": "1.1.0",
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		},
+		"supportedThemes": []
+	},
+	"sap.ui5": {
+		"_version": "1.1.0",
+		"dependencies": {
+			"minUI5Version": "1.65.6"
+		},
+		"extends": {
+			"component": "at.clouddna.training00.FioriDeepDive",
+			"extensions": {
+				"sap.ui.viewExtensions": {
+					"at.clouddna.training00.FioriDeepDive.view.Customer": {
+						"customer_ext_poin1": {
+							"className": "sap.ui.core.Fragment",
+							"fragmentName": "at.clouddna.training00.FioriDeepDive.ZHOFIO_00Extension.view.Customer_customer_ext_poin1Custom",
+							"type": "XML"
+						}
+					}
+				},
+				"sap.ui.controllerExtensions": {
+					"at.clouddna.training00.FioriDeepDive.controller.Customer": {
+						"controllerName": "at.clouddna.training00.FioriDeepDive.ZHOFIO_00Extension.controller.CustomerCustom"
+					}
+				}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "at.clouddna.training00.FioriDeepDive.ZHOFIO_00Extension.i18n.i18n"
+				}
+			}
+		}
+	}
+}
