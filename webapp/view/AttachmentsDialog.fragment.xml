@@ -1,6 +1,14 @@
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:html="http://www.w3.org/1999/xhtml">
 	<Dialog id="attachments_dialog" title="{i18n>title.attachmentsdialog}" resizeable="true">
-		<content></content>
+		<content>
+			<UploadCollection id="attachments_uploadcolletion" items="{Documents}" change="onUploadChange" uploadComplete="onUploadComplete"
+				beforeUploadStarts="onBeforeUploadStarts" uploadEnabled="{editModel>/editmode}" uploadButtonInvisible="{= !${editModel>/editmode}}">
+				<items>
+					<UploadCollectionItem fileName=" {DocumentName}" url=" {path: 'DocId' , formatter: '.formatUploadItemUrl' }" visibleEdit="false"
+						deletePress="onDocumentDelete" visibleDelete="{editModel>/editmode}"/>
+				</items>
+			</UploadCollection>
+		</content>
 		<buttons>
 			<Button text="{i18n>button.close}" press="onAttachmentsDialogClose"/>
 		</buttons>

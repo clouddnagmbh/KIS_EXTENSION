@@ -4,8 +4,9 @@ sap.ui.define([
 	"sap/ui/core/Fragment",
 	"sap/m/MessageBox",
 	"at/clouddna/training00/FioriDeepDive/formatter/formatter",
-	"sap/ui/core/routing/History"
-], function (e, t, s, i, o, n) {
+	"sap/ui/core/routing/History",
+	"sap/m/UploadCollectionParameter"
+], function (e, t, s, MessageBox, o, n, UploadCollectionParameter) {
 	"use strict";
 	return sap.ui.controller("at.clouddna.training00.FioriDeepDive.ZHOFIO_00Extension.controller.CustomerCustom", {
 		//    formatter: o,
@@ -14,15 +15,21 @@ sap.ui.define([
 		//    onInit: function () {
 		//        this.getRouter().getRoute("Customer").attachPatternMatched(this._onPatternMatched, this);
 		//    },
+
+		_sCustomerId: "",
 		_onPatternMatched: function (e) {
 			let s = new t({
 					editmode: false
 				}),
 				i = e.getParameter("arguments").customerid;
 			this.setModel(s, "editModel");
+
+			this._oUploadCollection = this.getView().byId("attachments_uploadcolletion");
+
 			if (i !== "create") {
 				this._sMode = "display";
 				this._showCustomerFragment("DisplayCustomer");
+				this._sCustomerId = i;
 				this.getView().bindElement({
 					path: "/CustomerSet(guid'" + i + "')",
 					events: {
@@ -65,7 +72,9 @@ sap.ui.define([
 
 		onOpenAttachments: function (oEvent) {
 			if (this._oAttachmentsDialog) {
+				this._oUploadCollection = this.getView().byId("attachments_uploadcolletion");
 				this._oAttachmentsDialog.open();
+				this._oUploadCollection.setUploadUrl(this.getModel().sServiceUrl + this.getView().getBindingContext().sPath + "/Documents");
 			} else {
 				s.load({
 					id: this.getView().getId(),
@@ -76,13 +85,68 @@ sap.ui.define([
 					this._oAttachmentsDialog.addStyleClass(this._getContentDensitClass());
 					this.getView().addDependent(this._oAttachmentsDialog);
 					this._oAttachmentsDialog.open();
-
+					this._oUploadCollection = this.getView().byId("attachments_uploadcolletion");
+					this._oUploadCollection.setUploadUrl(this.getModel().sServiceUrl + this.getView().getBindingContext().sPath + "/Documents");
 				}.bind(this));
 			}
 		},
 
 		onAttachmentsDialogClose: function () {
 			this._oAttachmentsDialog.close();
+		},
+
+		formatUploadItemUrl: function (sDocId) {
+			return this.getModel().sServiceUrl + "/CustomerDocumentSet(DocId=guid'" + sDocId +
+				"',CustomerId=guid'" + this._sCustomerId + "')/$value";
+		},
+
+		onBeforeUploadStarts: function (oEvent) {
+			let oHeaderSlug = new UploadCollectionParameter({
+				name: "slug",
+				value: oEvent.getParameter("fileName")
+			});
+
+			oEvent.getParameters().addHeaderParameter(oHeaderSlug);
+		},
+
+		onUploadChange: function (oEvent) {
+			this._oUploadCollection.removeAllHeaderParameters();
+
+			let oCSRFHeader = new UploadCollectionParameter({
+				name: "x-csrf-token",
+				value: this.getModel().getSecurityToken()
+			});
+
+			this._oUploadCollection.addHeaderParameter(oCSRFHeader);
+		},
+
+		onUploadComplete: function (oEvent) {
+			this.getModel().refresh();
+		},
+
+		onDocumentDelete: function (oEvent) {
+			let sDocumentPath = oEvent.getSource().getBindingContext().sPath;
+
+			MessageBox.confirm(this.geti18nText("dialog.delete.attachment"), {
+				onClose: function (sAction) {
+					if (sAction === MessageBox.Action.OK) {
+						this.getView().setBusy(true);
+
+						this.getModel().remove(sDocumentPath, {
+							success: function (oData, reponse) {
+								MessageBox.success(this.geti18nText("dialog.delete.attachment.success"));
+								this.logInfo("Delete successful for " + sDocumentPath);
+								this.getView().setBusy(false);
+							}.bind(this),
+							error: function (oError) {
+								MessageBox.error(oError.message);
+								this.logError("Delete not successul for " + sDocumentPath);
+								this.getView().setBusy(false);
+							}.bind(this)
+						});
+					}
+				}.bind(this)
+			});
 		},
 
 		//    onEditPress: function (e) {
